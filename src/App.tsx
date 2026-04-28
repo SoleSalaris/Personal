@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import SignatureCanvas from 'react-signature-canvas';
 import { jsPDF } from 'jspdf';
 import { 
@@ -111,6 +111,12 @@ export default function App() {
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const sigCanvas = useRef<SignatureCanvas>(null);
 
+  useEffect(() => {
+    if (showSuccessView) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [showSuccessView]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
@@ -158,6 +164,16 @@ export default function App() {
       
       return { ...prev, diasLaborales: newDays };
     });
+  };
+
+  const handleSignatureBegin = () => {
+    if (errors.firma) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors.firma;
+        return newErrors;
+      });
+    }
   };
 
   const clearSignature = () => {
@@ -364,8 +380,8 @@ export default function App() {
 
   if (showSuccessView) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200">
+      <div className="fixed inset-0 z-50 bg-slate-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div className="max-w-md w-full my-auto bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200 animate-in fade-in zoom-in duration-300">
           <div className="bg-green-600 p-8 text-white text-center">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle2 size={32} />
@@ -753,6 +769,7 @@ export default function App() {
                 <SignatureCanvas
                   ref={sigCanvas}
                   penColor="black"
+                  onBegin={handleSignatureBegin}
                   canvasProps={{
                     className: "w-full h-48 cursor-crosshair"
                   }}
