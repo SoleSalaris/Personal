@@ -369,7 +369,7 @@ export default function App() {
                     onChange={handleInputChange}
                     placeholder="Ej: Juan"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.nombre ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -384,7 +384,7 @@ export default function App() {
                     onChange={handleInputChange}
                     placeholder="Ej: Perez"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.apellido ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -397,9 +397,10 @@ export default function App() {
                     name="dni"
                     value={formData.dni}
                     onChange={handleInputChange}
+                    inputMode="numeric"
                     placeholder="00.000.000"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.dni ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -412,9 +413,10 @@ export default function App() {
                     name="cuil"
                     value={formData.cuil}
                     onChange={handleInputChange}
+                    inputMode="numeric"
                     placeholder="00-00000000-0"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.cuil ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -427,9 +429,10 @@ export default function App() {
                     name="fechaNacimiento"
                     value={formData.fechaNacimiento}
                     onChange={handleInputChange}
+                    inputMode="numeric"
                     placeholder="dd/mm/aaaa"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.fechaNacimiento ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -438,17 +441,18 @@ export default function App() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">Teléfono <span className="text-red-500">*</span></label>
                   <div className={cn(
-                    "flex items-center w-full px-4 py-2 rounded-lg border focus-within:ring-2 outline-none transition-all bg-white",
+                    "flex items-center w-full h-12 px-4 rounded-lg border focus-within:ring-2 outline-none transition-all bg-white",
                     errors.telefono ? "border-red-500 focus-within:ring-red-200" : "border-slate-300 focus-within:ring-indigo-500 focus-within:border-indigo-500"
                   )}>
                     <span className="text-slate-900 font-normal mr-1 select-none whitespace-nowrap">11 </span>
                     <input
                       type="tel"
+                      inputMode="numeric"
                       name="telefono"
                       value={formData.telefono}
                       onChange={handleInputChange}
                       placeholder="0000-0000"
-                      className="flex-1 bg-transparent outline-none border-none p-0 focus:ring-0 placeholder:text-slate-400"
+                      className="flex-1 bg-transparent outline-none border-none p-0 focus:ring-0 placeholder:text-slate-400 h-full"
                     />
                   </div>
                   {errors.telefono && <p className="text-red-500 text-xs mt-1">{errors.telefono}</p>}
@@ -465,7 +469,7 @@ export default function App() {
                     value={formData.domicilio}
                     onChange={handleInputChange}
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.domicilio ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -478,7 +482,7 @@ export default function App() {
                     name="departamento"
                     value={formData.departamento}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full h-12 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-1">
@@ -489,7 +493,7 @@ export default function App() {
                     value={formData.localidad}
                     onChange={handleInputChange}
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full h-12 px-4 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.localidad ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -511,7 +515,7 @@ export default function App() {
                     name="estadoCivil"
                     value={formData.estadoCivil}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
+                    className="w-full h-12 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all bg-white"
                   >
                     <option value="soltero/a">Soltero/a</option>
                     <option value="casado/a">Casado/a</option>
@@ -526,7 +530,7 @@ export default function App() {
                     disabled={formData.estadoCivil === 'soltero/a'}
                     value={formData.nombreConyuge}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all disabled:bg-slate-100 disabled:cursor-not-allowed"
+                    className="w-full h-12 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all disabled:bg-slate-100 disabled:cursor-not-allowed"
                   />
                 </div>
                 <div className="space-y-1">
@@ -537,7 +541,7 @@ export default function App() {
                     name="cantidadHijos"
                     value={formData.cantidadHijos}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                    className="w-full h-12 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -562,7 +566,7 @@ export default function App() {
                         type="button"
                         onClick={() => handleDayToggle(day)}
                         className={cn(
-                          "px-4 py-2 rounded-full text-sm font-medium transition-all border w-full sm:w-auto",
+                          "px-4 h-12 rounded-full text-sm font-medium transition-all border w-full sm:w-auto flex items-center justify-center",
                           formData.diasLaborales.includes(day)
                             ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
                             : cn(
@@ -594,7 +598,7 @@ export default function App() {
                             name="horarioSemanaInicio1"
                             value={formData.horarioSemanaInicio1}
                             onChange={handleInputChange}
-                            className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white"
+                            className="flex-1 h-12 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white"
                           >
                             <option value="">Inicio</option>
                             {TIME_OPTIONS.map(time => <option key={`s1-i-${time}`} value={time}>{time}</option>)}
@@ -605,7 +609,7 @@ export default function App() {
                             value={formData.horarioSemanaFin1}
                             onChange={handleInputChange}
                             disabled={!formData.horarioSemanaInicio1}
-                            className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
+                            className="flex-1 h-12 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
                           >
                             <option value="">Fin</option>
                             {getValidTimes(formData.horarioSemanaInicio1).map(time => <option key={`s1-f-${time}`} value={time}>{time}</option>)}
@@ -620,7 +624,7 @@ export default function App() {
                             value={formData.horarioSemanaInicio2}
                             onChange={handleInputChange}
                             disabled={!formData.horarioSemanaFin1}
-                            className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
+                            className="flex-1 h-12 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
                           >
                             <option value="">Inicio</option>
                             {getValidTimes(formData.horarioSemanaFin1).map(time => <option key={`s2-i-${time}`} value={time}>{time}</option>)}
@@ -631,7 +635,7 @@ export default function App() {
                             value={formData.horarioSemanaFin2}
                             onChange={handleInputChange}
                             disabled={!formData.horarioSemanaInicio2}
-                            className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
+                            className="flex-1 h-12 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
                           >
                             <option value="">Fin</option>
                             {getValidTimes(formData.horarioSemanaInicio2).map(time => <option key={`s2-f-${time}`} value={time}>{time}</option>)}
@@ -653,7 +657,7 @@ export default function App() {
                           value={formData.horarioSabadoInicio}
                           onChange={handleInputChange}
                           disabled={!formData.diasLaborales.includes('Sábado')}
-                          className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
+                          className="flex-1 h-12 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
                         >
                           <option value="">Inicio</option>
                           {TIME_OPTIONS.map(time => <option key={`sat-i-${time}`} value={time}>{time}</option>)}
@@ -664,7 +668,7 @@ export default function App() {
                           value={formData.horarioSabadoFin}
                           onChange={handleInputChange}
                           disabled={!formData.horarioSabadoInicio || !formData.diasLaborales.includes('Sábado')}
-                          className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
+                          className="flex-1 h-12 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
                         >
                           <option value="">Fin</option>
                           {getValidTimes(formData.horarioSabadoInicio).map(time => <option key={`sat-f-${time}`} value={time}>{time}</option>)}
