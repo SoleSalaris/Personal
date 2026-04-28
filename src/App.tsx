@@ -46,7 +46,7 @@ const INITIAL_DATA: FormData = {
   nombre: '',
   apellido: '',
   fechaNacimiento: '',
-  telefono: '11 ',
+  telefono: '',
   dni: '',
   cuil: '',
   domicilio: '',
@@ -87,19 +87,19 @@ const formatCUIL = (val: string) => {
   return `${digits.slice(0, 2)}-${digits.slice(2, 10)}-${digits.slice(10)}`;
 };
 
-// Helper to format Phone: 11 0000-0000
+// Helper to format Phone: 0000-0000 (assumes prefix 11 is handled separately)
 const formatPhone = (val: string) => {
-  // Ensure it always starts with 11
-  let digits = val.replace(/\D/g, '');
-  if (!digits.startsWith('11')) {
-    digits = '11' + digits;
-  }
-  // Max 10 digits (11 + 8)
-  digits = digits.slice(0, 10);
-  
-  if (digits.length <= 2) return '11 ';
-  if (digits.length <= 6) return `11 ${digits.slice(2)}`;
-  return `11 ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  const digits = val.replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 4) return digits;
+  return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+};
+
+// Helper to format Date: dd/mm/aaaa
+const formatDate = (val: string) => {
+  const digits = val.replace(/\D/g, '').slice(0, 8);
+  if (digits.length <= 2) return digits;
+  if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+  return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
 };
 
 export default function App() {
@@ -125,6 +125,7 @@ export default function App() {
     if (name === 'dni') finalValue = formatDNI(value);
     if (name === 'cuil') finalValue = formatCUIL(value);
     if (name === 'telefono') finalValue = formatPhone(value);
+    if (name === 'fechaNacimiento') finalValue = formatDate(value);
 
     setFormData(prev => ({ ...prev, [name]: finalValue }));
     
@@ -178,10 +179,11 @@ export default function App() {
     const cleanCUIL = formData.cuil.replace(/\D/g, '');
     if (cleanCUIL.length !== 11) newErrors.cuil = 'El CUIL debe tener 11 números.';
     
-    if (!formData.fechaNacimiento) newErrors.fechaNacimiento = 'La fecha de nacimiento es obligatoria.';
+    const cleanFecha = formData.fechaNacimiento.replace(/\D/g, '');
+    if (cleanFecha.length !== 8) newErrors.fechaNacimiento = 'La fecha debe tener el formato dd/mm/aaaa.';
     
     const cleanPhone = formData.telefono.replace(/\D/g, '');
-    if (cleanPhone.length !== 10) newErrors.telefono = 'El teléfono debe tener 8 números después del 11.';
+    if (cleanPhone.length !== 8) newErrors.telefono = 'El teléfono debe tener 8 números.';
     
     if (!formData.domicilio.trim()) newErrors.domicilio = 'El domicilio es obligatorio.';
     if (!formData.localidad.trim()) newErrors.localidad = 'La localidad es obligatoria.';
@@ -236,7 +238,7 @@ export default function App() {
     doc.text(`DNI: ${formData.dni}`, margin, y); y += 7;
     doc.text(`CUIL: ${formData.cuil}`, margin, y); y += 7;
     doc.text(`Fecha de nacimiento: ${formData.fechaNacimiento}`, margin, y); y += 7;
-    doc.text(`Teléfono: ${formData.telefono}`, margin, y); y += 7;
+    doc.text(`Teléfono: 11 ${formData.telefono}`, margin, y); y += 7;
     doc.text(`Domicilio: ${formData.domicilio}`, margin, y); y += 7;
     doc.text(`Departamento: ${formData.departamento || 'N/A'}`, margin, y); y += 7;
     doc.text(`Localidad: ${formData.localidad}`, margin, y); y += 15;
@@ -367,7 +369,7 @@ export default function App() {
                     onChange={handleInputChange}
                     placeholder="Ej: Juan"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.nombre ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -382,7 +384,7 @@ export default function App() {
                     onChange={handleInputChange}
                     placeholder="Ej: Perez"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.apellido ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -397,7 +399,7 @@ export default function App() {
                     onChange={handleInputChange}
                     placeholder="00.000.000"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.dni ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -412,7 +414,7 @@ export default function App() {
                     onChange={handleInputChange}
                     placeholder="00-00000000-0"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.cuil ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -421,12 +423,13 @@ export default function App() {
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">Fecha de nacimiento <span className="text-red-500">*</span></label>
                   <input
-                    type="date"
+                    type="text"
                     name="fechaNacimiento"
                     value={formData.fechaNacimiento}
                     onChange={handleInputChange}
+                    placeholder="dd/mm/aaaa"
                     className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
+                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all placeholder:text-slate-400",
                       errors.fechaNacimiento ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
                     )}
                   />
@@ -434,17 +437,20 @@ export default function App() {
                 </div>
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-slate-700">Teléfono <span className="text-red-500">*</span></label>
-                  <input
-                    type="tel"
-                    name="telefono"
-                    value={formData.telefono}
-                    onChange={handleInputChange}
-                    placeholder="11 2222-2222"
-                    className={cn(
-                      "w-full px-4 py-2 rounded-lg border focus:ring-2 outline-none transition-all",
-                      errors.telefono ? "border-red-500 focus:ring-red-200" : "border-slate-300 focus:ring-indigo-500 focus:border-indigo-500"
-                    )}
-                  />
+                  <div className={cn(
+                    "flex items-center w-full px-4 py-2 rounded-lg border focus-within:ring-2 outline-none transition-all bg-white",
+                    errors.telefono ? "border-red-500 focus-within:ring-red-200" : "border-slate-300 focus-within:ring-indigo-500 focus-within:border-indigo-500"
+                  )}>
+                    <span className="text-slate-900 font-normal mr-1 select-none whitespace-nowrap">11 </span>
+                    <input
+                      type="tel"
+                      name="telefono"
+                      value={formData.telefono}
+                      onChange={handleInputChange}
+                      placeholder="0000-0000"
+                      className="flex-1 bg-transparent outline-none border-none p-0 focus:ring-0 placeholder:text-slate-400"
+                    />
+                  </div>
                   {errors.telefono && <p className="text-red-500 text-xs mt-1">{errors.telefono}</p>}
                 </div>
               </div>
@@ -548,15 +554,15 @@ export default function App() {
                   <label className="text-sm font-medium text-slate-700">
                     Días laborales <span className="text-red-500">*</span>
                   </label>
-                  <p className="text-xs text-slate-400 font-normal mt-[-4px] mb-2">Seleccioná todos los que correspondan</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-xs text-slate-400 font-normal mt-[-4px] mb-2">Seleccioná los que correspondan</p>
+                  <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
                     {DIAS.map(day => (
                       <button
                         key={day}
                         type="button"
                         onClick={() => handleDayToggle(day)}
                         className={cn(
-                          "px-4 py-2 rounded-full text-sm font-medium transition-all border",
+                          "px-4 py-2 rounded-full text-sm font-medium transition-all border w-full sm:w-auto",
                           formData.diasLaborales.includes(day)
                             ? "bg-indigo-600 text-white border-indigo-600 shadow-md"
                             : cn(
@@ -646,7 +652,8 @@ export default function App() {
                           name="horarioSabadoInicio"
                           value={formData.horarioSabadoInicio}
                           onChange={handleInputChange}
-                          className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white"
+                          disabled={!formData.diasLaborales.includes('Sábado')}
+                          className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
                         >
                           <option value="">Inicio</option>
                           {TIME_OPTIONS.map(time => <option key={`sat-i-${time}`} value={time}>{time}</option>)}
@@ -656,8 +663,8 @@ export default function App() {
                           name="horarioSabadoFin"
                           value={formData.horarioSabadoFin}
                           onChange={handleInputChange}
-                          disabled={!formData.horarioSabadoInicio}
-                          className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100"
+                          disabled={!formData.horarioSabadoInicio || !formData.diasLaborales.includes('Sábado')}
+                          className="flex-1 px-3 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 outline-none transition-all bg-white disabled:bg-slate-100 disabled:cursor-not-allowed"
                         >
                           <option value="">Fin</option>
                           {getValidTimes(formData.horarioSabadoInicio).map(time => <option key={`sat-f-${time}`} value={time}>{time}</option>)}
@@ -736,7 +743,7 @@ export default function App() {
         </div>
         
         <footer className="mt-8 text-center text-slate-400 text-sm">
-          <p>© {new Date().getFullYear()} Consorcio de Propietarios - Gestión de Personal</p>
+          <p>© {new Date().getFullYear()} Administración Salaris SRL</p>
         </footer>
       </div>
     </div>
