@@ -1,11 +1,22 @@
-<div align="center">
+# Legajo de Personal - Consorcio
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Aplicación para la actualización de legajos del personal del consorcio con firma digital y descarga de PDF.
 
-  <h1>Built with AI Studio</h2>
+## Cómo publicar en GitHub Pages
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+Esta aplicación está configurada para desplegarse automáticamente en GitHub Pages usando GitHub Actions.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+### Pasos:
 
-</div>
+1. **Sube el código a GitHub**: Crea un repositorio en GitHub y sube todos los archivos.
+2. **Configura GitHub Pages**:
+   - Ve a la pestaña **Settings** de tu repositorio.
+   - En el menú lateral, selecciona **Pages**.
+   - En la sección **Build and deployment**, cambia el **Source** a `GitHub Actions`.
+3. **Ejecuta el despliegue**:
+   - Cada vez que hagas un `push` a la rama `main`, la aplicación se compilará y publicará automáticamente.
+   - Puedes ver el progreso en la pestaña **Actions** de tu repositorio.
+
+### Configuración de Vite
+
+Se ha añadido `base: './'` en `vite.config.ts` para asegurar que los archivos se carguen correctamente sin importar el nombre del repositorio.
