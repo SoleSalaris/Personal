@@ -16,7 +16,8 @@ import {
   Trash2, 
   CheckCircle2,
   AlertCircle,
-  Loader2
+  Loader2,
+  ArrowLeft
 } from 'lucide-react';
 import { cn } from './lib/utils';
 
@@ -106,6 +107,7 @@ export default function App() {
   const [formData, setFormData] = useState<FormData>(INITIAL_DATA);
   const [errors, setErrors] = useState<Partial<Record<keyof FormData | 'firma', string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessView, setShowSuccessView] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const sigCanvas = useRef<SignatureCanvas>(null);
 
@@ -173,17 +175,33 @@ export default function App() {
     if (!formData.nombre.trim()) newErrors.nombre = 'El nombre es obligatorio.';
     if (!formData.apellido.trim()) newErrors.apellido = 'El apellido es obligatorio.';
     
-    const cleanDNI = formData.dni.replace(/\D/g, '');
-    if (cleanDNI.length !== 8) newErrors.dni = 'El DNI debe tener 8 números.';
+    if (!formData.dni.trim()) {
+      newErrors.dni = 'El DNI es obligatorio.';
+    } else {
+      const cleanDNI = formData.dni.replace(/\D/g, '');
+      if (cleanDNI.length !== 8) newErrors.dni = 'El DNI debe tener 8 números.';
+    }
     
-    const cleanCUIL = formData.cuil.replace(/\D/g, '');
-    if (cleanCUIL.length !== 11) newErrors.cuil = 'El CUIL debe tener 11 números.';
+    if (!formData.cuil.trim()) {
+      newErrors.cuil = 'El CUIL es obligatorio.';
+    } else {
+      const cleanCUIL = formData.cuil.replace(/\D/g, '');
+      if (cleanCUIL.length !== 11) newErrors.cuil = 'El CUIL debe tener 11 números.';
+    }
     
-    const cleanFecha = formData.fechaNacimiento.replace(/\D/g, '');
-    if (cleanFecha.length !== 8) newErrors.fechaNacimiento = 'La fecha debe tener el formato dd/mm/aaaa.';
+    if (!formData.fechaNacimiento.trim()) {
+      newErrors.fechaNacimiento = 'La fecha de nacimiento es obligatoria.';
+    } else {
+      const cleanFecha = formData.fechaNacimiento.replace(/\D/g, '');
+      if (cleanFecha.length !== 8) newErrors.fechaNacimiento = 'La fecha debe tener el formato dd/mm/aaaa.';
+    }
     
-    const cleanPhone = formData.telefono.replace(/\D/g, '');
-    if (cleanPhone.length !== 8) newErrors.telefono = 'El teléfono debe tener 8 números.';
+    if (!formData.telefono.trim()) {
+      newErrors.telefono = 'El teléfono es obligatorio.';
+    } else {
+      const cleanPhone = formData.telefono.replace(/\D/g, '');
+      if (cleanPhone.length !== 8) newErrors.telefono = 'El teléfono debe tener 8 números.';
+    }
     
     if (!formData.domicilio.trim()) newErrors.domicilio = 'El domicilio es obligatorio.';
     if (!formData.localidad.trim()) newErrors.localidad = 'La localidad es obligatoria.';
@@ -308,26 +326,17 @@ export default function App() {
             title: 'Legajo Personal',
             text: `Legajo de ${formData.nombre} ${formData.apellido}`,
           });
-          setStatus({ 
-            type: 'success', 
-            message: 'Legajo compartido correctamente.' 
-          });
+          setShowSuccessView(true);
         } catch (shareError) {
           if ((shareError as Error).name !== 'AbortError') {
             console.error('Error sharing:', shareError);
             doc.save(fileName);
-            setStatus({ 
-              type: 'success', 
-              message: 'PDF generado para descarga (hubo un problema al compartir).' 
-            });
+            setShowSuccessView(true);
           }
         }
       } else {
         doc.save(fileName);
-        setStatus({ 
-          type: 'success', 
-          message: 'PDF generado y descargado (su navegador no soporta compartir).' 
-        });
+        setShowSuccessView(true);
       }
     } catch (error) {
       console.error('Error processing form:', error);
@@ -337,11 +346,53 @@ export default function App() {
     }
   };
 
+  const handleBackToForm = () => {
+    setFormData(INITIAL_DATA);
+    setErrors({});
+    setStatus(null);
+    setShowSuccessView(false);
+    setTimeout(() => {
+      sigCanvas.current?.clear();
+    }, 0);
+  };
+
   const getValidTimes = (afterTime?: string) => {
     if (!afterTime) return TIME_OPTIONS;
     const startIndex = TIME_OPTIONS.indexOf(afterTime);
     return TIME_OPTIONS.slice(startIndex + 1);
   };
+
+  if (showSuccessView) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200">
+          <div className="bg-green-600 p-8 text-white text-center">
+            <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle2 size={32} />
+            </div>
+            <h2 className="text-2xl font-bold italic tracking-tight">¡Legajo enviado!</h2>
+          </div>
+          <div className="p-8 text-center space-y-6">
+            <p className="text-slate-600 leading-relaxed">
+              Tu ficha de datos personales se ha procesado correctamente. Muchas gracias por tu colaboración.
+            </p>
+            <div className="pt-4">
+              <button
+                onClick={handleBackToForm}
+                className="inline-flex items-center gap-2 text-indigo-600 font-semibold hover:text-indigo-800 transition-colors py-2 px-4 rounded-lg hover:bg-indigo-50"
+              >
+                <ArrowLeft size={18} />
+                Volver al formulario
+              </button>
+            </div>
+          </div>
+          <footer className="p-6 border-t border-slate-100 text-center text-slate-400 text-xs">
+            <p>© {new Date().getFullYear()} Administración Salaris SRL</p>
+          </footer>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -711,13 +762,6 @@ export default function App() {
             </section>
 
             {/* Status Messages */}
-            {status && status.type === 'success' && (
-              <div className="p-4 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 bg-green-50 text-green-800 border border-green-200">
-                <CheckCircle2 className="shrink-0" size={20} />
-                <p className="text-sm font-medium">{status.message}</p>
-              </div>
-            )}
-            
             {status && status.type === 'error' && !Object.keys(errors).length && (
               <div className="p-4 rounded-lg flex items-start gap-3 animate-in fade-in slide-in-from-top-2 bg-red-50 text-red-800 border border-red-200">
                 <AlertCircle className="shrink-0" size={20} />
