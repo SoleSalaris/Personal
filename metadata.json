@@ -1,0 +1,6 @@
+{
+  "name": "Administración Salaris - Legajo Digital",
+  "description": "Formulario multi-paso para la gestión de legajos de personal con firma digital y generación de PDF.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": []
+}

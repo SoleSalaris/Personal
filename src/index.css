@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Verde */
+  --color-primary: #004721;
+  --color-verde-light: #E6EDE9;
+  
+  /* Gris */
+  --color-gris-dark: #191C1E;
+  --color-gris-med: #45464D;
+  --color-gris-light: #747779;
+  --color-gris-border: #C4C7C9;
+  --color-gris-divider: #E0E3E5;
+  --color-surface: #F7F9FB;
+
+  --color-error: #D32F2F;
+
+  --radius-custom: 4px;
+}
+
+@layer base {
+  body {
+    @apply bg-surface font-sans text-gris-dark;
+  }
+}
+
+.signature-pad {
+  @apply w-full h-full border border-dashed border-gris-border rounded-custom;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
