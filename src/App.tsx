@@ -94,6 +94,16 @@ export default function App() {
     }
   }, [formData.estadoCivil, setValue, formData.nombreConyuge]);
 
+  // Handle weekday range overlaps
+  useEffect(() => {
+    if (formData.horarioSemanaRango1Hasta && formData.horarioSemanaRango2Desde) {
+      if (formData.horarioSemanaRango2Desde <= formData.horarioSemanaRango1Hasta) {
+        setValue('horarioSemanaRango2Desde', '');
+        setValue('horarioSemanaRango2Hasta', '');
+      }
+    }
+  }, [formData.horarioSemanaRango1Hasta, setValue, formData.horarioSemanaRango2Desde]);
+
   const nextStep = async () => {
     const fieldsByStep: (keyof FormData)[][] = [
       ['nombre', 'apellido', 'fechaNacimiento', 'dni', 'cuil', 'telefono', 'direccion', 'localidad'],
@@ -170,7 +180,7 @@ export default function App() {
             </p>
           </div>
 
-          <div className="w-full h-[56px] px-6 bg-white border-y border-gris-divider shadow-sm flex items-center gap-4 mb-12">
+          <div className="w-full h-[56px] px-6 bg-white border border-gris-divider rounded shadow-sm flex items-center gap-4 mb-12">
             <Info className="w-5 h-5 text-primary shrink-0" />
             <p className="text-sm font-semibold text-gris-med leading-snug">
               Vamos a pedirte foto de tu DNI.
@@ -179,7 +189,7 @@ export default function App() {
 
           <button
             onClick={() => setView('form')}
-            className="w-full h-12 bg-primary text-white font-bold flex items-center justify-center gap-3 transition-all active:scale-95"
+            className="w-full h-12 bg-primary text-white rounded font-bold flex items-center justify-center gap-3 transition-all active:scale-95"
           >
             Completar
             <ArrowRight className="w-5 h-5" />
@@ -555,9 +565,12 @@ export default function App() {
                               name="horarioSemanaRango2Desde"
                               control={control}
                               render={({ field }) => (
-                                <Select {...field}>
+                                <Select 
+                                  disabled={!formData.horarioSemanaRango1Hasta}
+                                  {...field}
+                                >
                                   <option value="" disabled hidden>Inicio</option>
-                                  {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                                  {TIME_OPTIONS.filter(t => t > (formData.horarioSemanaRango1Hasta || '23:59')).map(t => <option key={t} value={t}>{t}</option>)}
                                 </Select>
                               )}
                             />
