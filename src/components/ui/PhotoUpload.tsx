@@ -1,6 +1,7 @@
-import { Upload } from 'lucide-react';
+import { Upload, Camera as CameraIcon } from 'lucide-react';
 import { cn } from '@/src/lib/utils';
 import { useState } from 'react';
+import { CameraModal } from './CameraModal';
 
 interface PhotoUploadProps {
   label: string;
@@ -11,6 +12,12 @@ interface PhotoUploadProps {
 
 export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps) => {
   const [preview, setPreview] = useState(value);
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+  const handleCapture = (imageData: string) => {
+    setPreview(imageData);
+    onChange(imageData);
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -53,6 +60,16 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
 
   const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
 
+  const openCamera = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Only use custom camera if mediaDevices is supported and it's not a generic file upload
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      setIsCameraOpen(true);
+    } else {
+      document.getElementById(inputId)?.click();
+    }
+  };
+
   return (
     <div className="space-y-2">
       <label className="block text-sm font-semibold text-gris-med">{label}</label>
@@ -62,17 +79,17 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
           error ? "border-error bg-error/5" : "border-gris-border bg-surface hover:bg-gris-divider/50",
           preview && "border-solid border-gris-divider"
         )}
-        onClick={() => document.getElementById(inputId)?.click()}
+        onClick={openCamera}
       >
         {preview ? (
           <img src={preview} alt={label} className="w-full h-full object-contain" />
         ) : (
           <>
             <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center text-primary mb-2">
-              <Upload className="w-5 h-5" />
+              <CameraIcon className="w-5 h-5" />
             </div>
             <span className="text-sm font-medium text-gris-light text-center">
-              Sacar o subir foto
+              Tomar foto guía
             </span>
           </>
         )}
@@ -86,6 +103,13 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
         />
       </div>
       {error && <span className="text-xs text-error font-medium">{error}</span>}
+
+      <CameraModal
+        isOpen={isCameraOpen}
+        onClose={() => setIsCameraOpen(false)}
+        onCapture={handleCapture}
+        title={label}
+      />
     </div>
   );
 };

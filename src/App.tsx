@@ -240,7 +240,10 @@ export default function App() {
           <StepIndicator currentStep={currentStep} />
         </div>
 
-        <form className="bg-white p-6 rounded-custom shadow-sm border border-gris-divider space-y-8 w-full max-w-lg">
+        <form 
+          className="bg-white p-6 rounded-custom shadow-sm border border-gris-divider space-y-8 w-full max-w-lg"
+          onSubmit={(e) => e.preventDefault()}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
