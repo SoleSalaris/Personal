@@ -89,7 +89,7 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
               <CameraIcon className="w-5 h-5" />
             </div>
             <span className="text-sm font-medium text-gris-light text-center">
-              Tomar foto guía
+              Tomar foto
             </span>
           </>
         )}
