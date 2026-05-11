@@ -83,7 +83,11 @@ export default function App() {
   // Save to localStorage
   useEffect(() => {
     if (view === 'form') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
+      } catch (err) {
+        console.warn('Could not save form data to localStorage (possibly quota exceeded):', err);
+      }
     }
   }, [formData, view]);
 

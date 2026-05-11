@@ -17,13 +17,41 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const result = reader.result as string;
-        setPreview(result);
-        onChange(result);
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 1200;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          const result = canvas.toDataURL('image/jpeg', 0.8);
+          setPreview(result);
+          onChange(result);
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }
   };
+
+  const inputId = `upload-${label.replace(/\s+/g, '-').toLowerCase()}`;
 
   return (
     <div className="space-y-2">
@@ -34,7 +62,7 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
           error ? "border-error bg-error/5" : "border-gris-border bg-surface hover:bg-gris-divider/50",
           preview && "border-solid border-gris-divider"
         )}
-        onClick={() => document.getElementById(`upload-${label}`)?.click()}
+        onClick={() => document.getElementById(inputId)?.click()}
       >
         {preview ? (
           <img src={preview} alt={label} className="w-full h-full object-contain" />
@@ -49,7 +77,7 @@ export const PhotoUpload = ({ label, value, onChange, error }: PhotoUploadProps)
           </>
         )}
         <input
-          id={`upload-${label}`}
+          id={inputId}
           type="file"
           accept="image/*"
           capture="environment"
