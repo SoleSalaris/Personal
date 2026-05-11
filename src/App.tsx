@@ -147,7 +147,7 @@ export default function App() {
     setIsSubmitting(true);
     try {
       const pdfBlob = await generatePDF(data);
-      const shared = await shareFile(pdfBlob, `Legajo_${data.apellido}_${data.nombre}.pdf`);
+      const shared = await shareFile(pdfBlob, `Ficha_${data.apellido}.pdf`);
       
       localStorage.removeItem(STORAGE_KEY);
       setView('success');
@@ -265,7 +265,7 @@ export default function App() {
                         placeholder="Ej: Juan"
                         error={errors.nombre?.message}
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z\s]/g, ''))}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                       />
                     )}
                   />
@@ -278,7 +278,7 @@ export default function App() {
                         placeholder="Ej: Pérez"
                         error={errors.apellido?.message}
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z\s]/g, ''))}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                       />
                     )}
                   />
@@ -352,7 +352,7 @@ export default function App() {
                         placeholder="Calle y número"
                         error={errors.direccion?.message}
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ''))}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                       />
                     )}
                   />
@@ -365,7 +365,7 @@ export default function App() {
                         placeholder="Piso y departamento"
                         error={errors.departamento?.message}
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ''))}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                       />
                     )}
                   />
@@ -378,7 +378,7 @@ export default function App() {
                         placeholder="Ej: Martínez"
                         error={errors.localidad?.message}
                         {...field}
-                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z\s]/g, ''))}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                       />
                     )}
                   />
@@ -460,7 +460,7 @@ export default function App() {
                         error={errors.nombreConyuge?.message}
                         {...field}
                         disabled={!['Casado/a', 'Unión Convivencial'].includes(formData.estadoCivil)}
-                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z\s]/g, ''))}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                       />
                     )}
                   />
@@ -496,7 +496,7 @@ export default function App() {
                           placeholder="Calle y número"
                           error={errors.consorcioDireccion?.message}
                           {...field}
-                          onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z0-9\s]/g, ''))}
+                          onChange={(e) => field.onChange(e.target.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, ''))}
                         />
                       )}
                     />

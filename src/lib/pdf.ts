@@ -8,7 +8,7 @@ export const generatePDF = async (data: FormData) => {
   // Header
   doc.setFontSize(22);
   doc.setTextColor(0, 71, 35); // Primary Green
-  doc.text('Legajo Digital de Personal', 20, y);
+  doc.text('Ficha de datos personales', 20, y);
   
   y += 10;
   doc.setFontSize(10);
@@ -68,36 +68,36 @@ export const generatePDF = async (data: FormData) => {
     addField('Horario Sábados', `${data.horarioSabadoDesde} a ${data.horarioSabadoHasta}`);
   }
 
-  // Signature
-  y += 20;
-  if (y > 220) {
-    doc.addPage();
-    y = 20;
-  }
-  doc.setFont('helvetica', 'bold');
-  doc.text('Firma del trabajador:', 20, y);
-  y += 10;
-  doc.addImage(data.firma, 'PNG', 20, y, 60, 30);
-
-  // Photos
+  // Photos and Signature on a new page
   doc.addPage();
   y = 20;
   doc.setFontSize(14);
-  doc.text('Documento de Identidad', 20, y);
-  y += 10;
-  doc.setFontSize(11);
-  doc.text('Frente:', 20, y);
-  y += 5;
-  doc.addImage(data.documentoFrente, 'JPEG', 20, y, 170, 100);
-  y += 110;
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(0, 71, 35);
+  doc.text('Documentos y Firma', 20, y);
   
-  if (y > 150) {
+  y += 15;
+  doc.setFontSize(11);
+  doc.setTextColor(50);
+  doc.text('Frente del DNI:', 20, y);
+  y += 5;
+  doc.addImage(data.documentoFrente, 'JPEG', 20, y, 140, 85);
+  
+  y += 95;
+  doc.text('Dorso del DNI:', 20, y);
+  y += 5;
+  doc.addImage(data.documentoDorso, 'JPEG', 20, y, 140, 85);
+  
+  y += 100;
+  if (y > 270) {
     doc.addPage();
     y = 20;
   }
-  doc.text('Dorso:', 20, y);
+  doc.setTextColor(50);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Firma del trabajador:', 20, y);
   y += 5;
-  doc.addImage(data.documentoDorso, 'JPEG', 20, y, 170, 100);
+  doc.addImage(data.firma, 'PNG', 20, y, 60, 30);
 
   return doc.output('blob');
 };
