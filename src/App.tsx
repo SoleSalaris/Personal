@@ -659,8 +659,7 @@ export default function App() {
             disabled={currentStep === 0}
           >
             <ArrowLeft className="w-5 h-5 flex-none" />
-            <span className="hidden sm:inline">Anterior</span>
-            <span className="sm:hidden">Ant.</span>
+            <span>Anterior</span>
           </button>
           <button
             type="button"
@@ -670,7 +669,7 @@ export default function App() {
           >
             <span className="truncate">
               {currentStep === STEPS.length - 1 ? (
-                isSubmitting ? 'Generando...' : 'Compartir legajo'
+                isSubmitting ? 'Generando...' : 'Compartir datos'
               ) : (
                 'Siguiente'
               )}
