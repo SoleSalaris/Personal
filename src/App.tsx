@@ -41,8 +41,10 @@ const DEFAULT_VALUES: Partial<FormData> = {
   horarioSemanaRango1Hasta: '',
   horarioSemanaRango2Desde: '',
   horarioSemanaRango2Hasta: '',
-  horarioSabadoDesde: '',
-  horarioSabadoHasta: '',
+  horarioSabadoRango1Desde: '',
+  horarioSabadoRango1Hasta: '',
+  horarioSabadoRango2Desde: '',
+  horarioSabadoRango2Hasta: '',
 };
 
 const STORAGE_KEY = 'legajo_form_data';
@@ -107,6 +109,26 @@ export default function App() {
       }
     }
   }, [formData.horarioSemanaRango1Hasta, setValue, formData.horarioSemanaRango2Desde]);
+
+  // Handle Saturday range overlaps
+  useEffect(() => {
+    if (formData.horarioSabadoRango1Hasta && formData.horarioSabadoRango2Desde) {
+      if (formData.horarioSabadoRango2Desde <= formData.horarioSabadoRango1Hasta) {
+        setValue('horarioSabadoRango2Desde', '');
+        setValue('horarioSabadoRango2Hasta', '');
+      }
+    }
+  }, [formData.horarioSabadoRango1Hasta, setValue, formData.horarioSabadoRango2Desde]);
+
+  // Clear Saturday schedules if Saturday is deselected
+  useEffect(() => {
+    if (!formData.diasLaborales?.includes('Sábado')) {
+      if (formData.horarioSabadoRango1Desde) setValue('horarioSabadoRango1Desde', '');
+      if (formData.horarioSabadoRango1Hasta) setValue('horarioSabadoRango1Hasta', '');
+      if (formData.horarioSabadoRango2Desde) setValue('horarioSabadoRango2Desde', '');
+      if (formData.horarioSabadoRango2Hasta) setValue('horarioSabadoRango2Hasta', '');
+    }
+  }, [formData.diasLaborales, setValue, formData.horarioSabadoRango1Desde, formData.horarioSabadoRango1Hasta, formData.horarioSabadoRango2Desde, formData.horarioSabadoRango2Hasta]);
 
   const nextStep = async () => {
     const fieldsByStep: (keyof FormData)[][] = [
@@ -529,8 +551,9 @@ export default function App() {
                   <div className="space-y-6 pt-4 border-t border-gris-divider">
                     <h2 className="font-bold text-lg text-gris-dark">Horario</h2>
                     
-                    <div className="bg-surface p-4 rounded-custom space-y-8 border border-gris-divider">
-                      <div className="space-y-4">
+                    <div className="space-y-4">
+                      {/* Contenedor Días de semana */}
+                      <div className="bg-surface p-4 rounded-custom space-y-6 border border-gris-divider">
                         <h3 className="font-bold text-sm text-gris-med uppercase tracking-wider">Días de semana</h3>
                         
                         {/* Rango 1 */}
@@ -599,36 +622,76 @@ export default function App() {
                         </div>
                       </div>
 
-                      <div className="space-y-4 pt-4 border-t border-gris-divider">
+                      {/* Contenedor Sábados */}
+                      <div className="bg-surface p-4 rounded-custom space-y-6 border border-gris-divider">
                         <h3 className="font-bold text-sm text-gris-med uppercase tracking-wider">Sábados</h3>
-                        <div className="flex items-center gap-3">
-                          <Controller
-                            name="horarioSabadoDesde"
-                            control={control}
-                            render={({ field }) => (
-                              <Select 
-                                disabled={!formData.diasLaborales?.includes('Sábado')}
-                                {...field}
-                              >
-                                <option value="" disabled hidden>Inicio</option>
-                                {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
-                              </Select>
-                            )}
-                          />
-                          <span className="text-gris-border font-bold">a</span>
-                          <Controller
-                            name="horarioSabadoHasta"
-                            control={control}
-                            render={({ field }) => (
-                              <Select 
-                                disabled={!formData.diasLaborales?.includes('Sábado') || !formData.horarioSabadoDesde}
-                                {...field}
-                              >
-                                <option value="" disabled>Fin</option>
-                                {TIME_OPTIONS.filter(t => t > (formData.horarioSabadoDesde || '')).map(t => <option key={t} value={t}>{t}</option>)}
-                              </Select>
-                            )}
-                          />
+                        
+                        {/* Rango 1 */}
+                        <div className="space-y-2">
+                          <span className="block text-sm font-semibold text-gris-med">Rango 1</span>
+                          <div className="flex items-center gap-3">
+                            <Controller
+                              name="horarioSabadoRango1Desde"
+                              control={control}
+                              render={({ field }) => (
+                                <Select 
+                                  disabled={!formData.diasLaborales?.includes('Sábado')}
+                                  {...field}
+                                >
+                                  <option value="" disabled hidden>Inicio</option>
+                                  {TIME_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
+                                </Select>
+                              )}
+                            />
+                            <span className="text-gris-border font-bold">a</span>
+                            <Controller
+                              name="horarioSabadoRango1Hasta"
+                              control={control}
+                              render={({ field }) => (
+                                <Select 
+                                  disabled={!formData.diasLaborales?.includes('Sábado') || !formData.horarioSabadoRango1Desde}
+                                  {...field}
+                                >
+                                  <option value="" disabled>Fin</option>
+                                  {TIME_OPTIONS.filter(t => t > (formData.horarioSabadoRango1Desde || '')).map(t => <option key={t} value={t}>{t}</option>)}
+                                </Select>
+                              )}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Rango 2 */}
+                        <div className="space-y-2">
+                          <span className="block text-sm font-semibold text-gris-med">Rango 2 (opcional)</span>
+                          <div className="flex items-center gap-3">
+                            <Controller
+                              name="horarioSabadoRango2Desde"
+                              control={control}
+                              render={({ field }) => (
+                                <Select 
+                                  disabled={!formData.diasLaborales?.includes('Sábado') || !formData.horarioSabadoRango1Hasta}
+                                  {...field}
+                                >
+                                  <option value="" disabled hidden>Inicio</option>
+                                  {TIME_OPTIONS.filter(t => t > (formData.horarioSabadoRango1Hasta || '23:59')).map(t => <option key={t} value={t}>{t}</option>)}
+                                </Select>
+                              )}
+                            />
+                            <span className="text-gris-border font-bold">a</span>
+                            <Controller
+                              name="horarioSabadoRango2Hasta"
+                              control={control}
+                              render={({ field }) => (
+                                <Select 
+                                  disabled={!formData.diasLaborales?.includes('Sábado') || !formData.horarioSabadoRango2Desde}
+                                  {...field}
+                                >
+                                  <option value="" disabled>Fin</option>
+                                  {TIME_OPTIONS.filter(t => t > (formData.horarioSabadoRango2Desde || '')).map(t => <option key={t} value={t}>{t}</option>)}
+                                </Select>
+                              )}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

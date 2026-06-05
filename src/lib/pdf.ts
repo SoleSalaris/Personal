@@ -64,8 +64,8 @@ export const generatePDF = async (data: FormData) => {
   addField('Consorcio', data.consorcioDireccion);
   addField('Días que trabaja', data.diasLaborales.join(', '));
   addField('Horario L-V', `${data.horarioSemanaRango1Desde} a ${data.horarioSemanaRango1Hasta}${data.horarioSemanaRango2Desde ? ` / ${data.horarioSemanaRango2Desde} a ${data.horarioSemanaRango2Hasta}` : ''}`);
-  if (data.horarioSabadoDesde) {
-    addField('Horario Sábados', `${data.horarioSabadoDesde} a ${data.horarioSabadoHasta}`);
+  if (data.horarioSabadoRango1Desde) {
+    addField('Horario Sábados', `${data.horarioSabadoRango1Desde} a ${data.horarioSabadoRango1Hasta}${data.horarioSabadoRango2Desde ? ` / ${data.horarioSabadoRango2Desde} a ${data.horarioSabadoRango2Hasta}` : ''}`);
   }
 
   // Photos and Signature on a new page

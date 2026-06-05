@@ -4,7 +4,29 @@ export const formSchema = z.object({
   // Step 1: Personal Data
   nombre: z.string().min(1, 'Este campo es obligatorio').regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo letras'),
   apellido: z.string().min(1, 'Este campo es obligatorio').regex(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/, 'Solo letras'),
-  fechaNacimiento: z.string().min(1, 'Este campo es obligatorio').regex(/^\d{2}\/\d{2}\/\d{4}$/, 'Formato inválido (dd/mm/aaaa)'),
+  fechaNacimiento: z.string().min(1, 'Este campo es obligatorio').superRefine((val, ctx) => {
+    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    const errorMsg = 'Ingresá una fecha válida';
+    
+    if (!regex.test(val)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: errorMsg });
+      return;
+    }
+    
+    const [d, m, y] = val.split('/').map(Number);
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    
+    if (d < 1 || d > 31 || m < 1 || m > 12 || y > currentYear || y < 1900) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: errorMsg });
+      return;
+    }
+    
+    const date = new Date(y, m - 1, d);
+    if (date.getDate() !== d || date.getMonth() !== m - 1 || date.getFullYear() !== y || date > now) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: errorMsg });
+    }
+  }),
   dni: z.string().min(1, 'Este campo es obligatorio').length(10, 'El DNI debe tener 8 números'),
   cuil: z.string().min(1, 'Este campo es obligatorio').length(13, 'El CUIL debe tener 11 números'),
   telefono: z.string().min(1, 'Este campo es obligatorio').length(9, 'El teléfono debe tener 8 números'),
@@ -28,8 +50,10 @@ export const formSchema = z.object({
   horarioSemanaRango1Hasta: z.string().min(1, 'Este campo es obligatorio'),
   horarioSemanaRango2Desde: z.string().optional(),
   horarioSemanaRango2Hasta: z.string().optional(),
-  horarioSabadoDesde: z.string().optional(),
-  horarioSabadoHasta: z.string().optional(),
+  horarioSabadoRango1Desde: z.string().optional(),
+  horarioSabadoRango1Hasta: z.string().optional(),
+  horarioSabadoRango2Desde: z.string().optional(),
+  horarioSabadoRango2Hasta: z.string().optional(),
 
   // Step 5: Signature
   firma: z.string().min(1, 'Este campo es obligatorio'),
