@@ -22,8 +22,13 @@
 }
 
 @layer base {
+  html, :root {
+    color-scheme: light !important;
+  }
+
   body {
     @apply bg-surface font-sans text-gris-dark;
+    color-scheme: light !important;
   }
 }
 
